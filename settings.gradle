@@ -1,0 +1,15 @@
+pluginManagement {
+    repositories {
+        def packagingRepository = providers.gradleProperty('smartPackagingRepo').orElse('https://java.funa.dev/releases')
+        maven {
+            url = uri(packagingRepository.get())
+            content {
+                includeGroup('group.aelysium.rustyconnector')
+                includeGroup('group.aelysium.rustyconnector.smart-provider-packaging')
+            }
+        }
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = 'rcs-kubernetes'

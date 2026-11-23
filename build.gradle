@@ -1,0 +1,47 @@
+plugins {
+    id 'java-library'
+    id 'com.gradleup.shadow' version '9.0.0-beta4'
+    id 'group.aelysium.rustyconnector.smart-provider-packaging' version '1.0.0'
+}
+
+group = 'fun.democraft'
+version = module_version
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://java.funa.dev/snapshots/' }
+    maven {
+        name = "funaReleases"
+        url = uri("https://java.funa.dev/releases")
+    }
+}
+
+dependencies {
+    compileOnly "group.aelysium.rustyconnector:core:${rustyconnector_version}"
+    compileOnly 'net.kyori:adventure-api:4.17.0'
+    implementation("fun.democraft:smart:2.0.0")
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+jar.enabled = false
+shadowJar {
+    archiveBaseName.set(archives_base_name)
+    archiveClassifier.set('')
+    dependencies {
+        // RustyConnector loads Smart as a separate module.
+        exclude(dependency('fun.democraft:smart:.*'))
+    }
+}
+assemble.dependsOn shadowJar
+
+configurations.testImplementation.extendsFrom(configurations.compileOnly)
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.13.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.13.4'
+}
+test {
+    useJUnitPlatform()
+    // Run against deterministic metadata even when the developer runs a proxy locally.
+    environment.keySet().removeIf { it.startsWith('SMART_') }
+}

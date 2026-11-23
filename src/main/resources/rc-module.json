@@ -1,0 +1,11 @@
+{
+  "main": "fun.democraft.smart.kubernetes.KubernetesBuilder",
+  "name": "Smart-Kubernetes",
+  "description": "Kubernetes provider for Smart.",
+  "dependencies": [
+    "smart"
+  ],
+  "environments": [
+    "proxy"
+  ]
+}
